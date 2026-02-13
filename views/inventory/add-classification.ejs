@@ -1,0 +1,24 @@
+<% if (title) { %>
+<h1><%= title %></h1>
+<% } else {
+  res.redirect('/')
+} %>
+
+<%- messages() %>
+
+<div class="mgt-add-classification">
+    <form action="/inv/classification" method="post">
+        <label for="classification_name">Classification name: </label>
+        <input type="text" required name="classification_name" id="classification_name" pattern="[A-Za-z]+" title="Only letters are allowed" value="<%= locals.classification_name %>">
+
+        <input type="submit" value="Save">
+
+        <% if (errors) { %>
+        <ul class="notice">
+        <% errors.array().forEach(error => { %>
+            <li><%= error.msg %></li>
+        <%  }) %>
+        </ul>
+        <% } %>
+    </form>
+</div>
