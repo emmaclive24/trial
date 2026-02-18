@@ -10,23 +10,22 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "bcryptjs": "^3.0.3",
-    "body-parser": "^2.2.2",
+    "bcryptjs": "^2.4.3",
+    "body-parser": "^1.20.2",
     "connect-flash": "^0.1.1",
-    "connect-pg-simple": "^10.0.0",
-    "cookie-parser": "^1.4.7",
-    "dotenv": "^16.0.3",
+    "connect-pg-simple": "^9.0.1",
+    "cookie-parser": "^1.4.6",
+    "dotenv": "^16.4.5",
     "ejs": "^3.1.10",
-    "express": "^4.18.2",
+    "express": "^4.19.2",
     "express-ejs-layouts": "^2.5.1",
-    "express-messages": "^1.0.1",
-    "express-session": "^1.19.0",
-    "express-validator": "^7.3.1",
-    "jsonwebtoken": "^9.0.3",
-    "pg": "^8.8.0"
+    "express-messages": "^3.0.2",
+    "express-session": "^1.18.0",
+    "express-validator": "^7.0.1",
+    "jsonwebtoken": "^9.0.2",
+    "pg": "^8.11.5"
   },
   "devDependencies": {
     "nodemon": "^3.1.0"
-  },
-  "packageManager": "pnpm@10.29.2+sha512.bef43fa759d91fd2da4b319a5a0d13ef7a45bb985a3d7342058470f9d2051a3ba8674e629672654686ef9443ad13a82da2beb9eeb3e0221c87b8154fff9d74b8"
+  }
 }
