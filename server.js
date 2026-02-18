@@ -22,13 +22,18 @@ const app = express()
 /* ***********************
  * Middleware
  *************************/
+
+// 1. Static assets should always be first to avoid unnecessary session checks
+app.use(static) 
+
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(cookieParser())
 
+// 2. Session Middleware
 app.use(session({
   store: new (require('connect-pg-simple')(session))({
-    createTableIfMissing: true,
+    createTableIfMissing: true, // Note: Render users may still need to create this manually
     pool,
   }),
   secret: process.env.SESSION_SECRET,
@@ -37,12 +42,14 @@ app.use(session({
   name: 'sessionId',
 }))
 
+// 3. Flash & Messages
 app.use(flash())
 app.use(function(req, res, next){
   res.locals.messages = require('express-messages')(req, res)
   next()
 })
 
+// 4. JWT Token Check
 app.use(utilities.checkJWTToken)
 
 /* ***********************
@@ -55,7 +62,6 @@ app.set("layout", "./layouts/layout")
 /* ***********************
  * Routes
  *************************/
-app.use(static)
 app.get("/", utilities.handleErrors(baseController.buildHome))
 app.use("/inv", inventoryRoute)
 app.use("/account", accountRoute)
@@ -67,14 +73,22 @@ app.use(async (req, res, next) => {
 
 /* ***********************
 * Error Handler
+* Polished to prevent "Headers already sent" errors
 *************************/
 app.use(async (err, req, res, next) => {
   let nav = await utilities.getNav()
   console.error(`Error at: "${req.originalUrl}": ${err.message}`)
+  
+  // FIX: Check if headers were already sent to prevent app crash
+  if (res.headersSent) {
+    return next(err)
+  }
+
   const status = err.status || 500
-  const message = status === 404 ? err.message : 'Oh no! There was a crash.'
+  const message = (status == 404) ? err.message : 'Oh no! There was a crash. Maybe try a different route?'
+  
   res.status(status).render("errors/error", {
-    title: status,
+    title: err.status || 'Server Error',
     message,
     nav
   })
@@ -84,7 +98,8 @@ app.use(async (err, req, res, next) => {
  * Server Listen
  *************************/
 const port = process.env.PORT || 5500
-const host = process.env.HOST || 'localhost'
+// On Render, '0.0.0.0' is better than 'localhost' for the host binding
+const host = process.env.HOST || '0.0.0.0'
 
 app.listen(port, () => {
   console.log(`App listening on ${host}:${port}`)
