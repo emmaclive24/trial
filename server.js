@@ -1,5 +1,5 @@
 /**
- * Primary server file
+ * CSE 340 Primary Server File
  */
 require("dotenv").config()
 const express = require("express")
@@ -9,7 +9,7 @@ const bodyParser = require("body-parser")
 const cookieParser = require("cookie-parser")
 const flash = require('connect-flash')
 
-// Project Modules
+// Routes & Modules
 const static = require("./routes/static")
 const baseController = require("./controllers/baseController")
 const inventoryRoute = require("./routes/inventoryRoute")
@@ -26,7 +26,6 @@ app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(cookieParser())
 
-// SESSION COOKIE - Stores sessions in PostgreSQL
 app.use(session({
   store: new (require('connect-pg-simple')(session))({
     createTableIfMissing: true,
@@ -61,7 +60,7 @@ app.get("/", utilities.handleErrors(baseController.buildHome))
 app.use("/inv", inventoryRoute)
 app.use("/account", accountRoute)
 
-// 404 handler
+// 404 Route
 app.use(async (req, res, next) => {
   next({status: 404, message: 'Sorry, we appear to have lost that page.'})
 })
@@ -82,7 +81,7 @@ app.use(async (err, req, res, next) => {
 })
 
 /* ***********************
- * Port Settings
+ * Server Listen
  *************************/
 const port = process.env.PORT || 5500
 const host = process.env.HOST || 'localhost'
